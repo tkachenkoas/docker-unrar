@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h3>Currently running on: <span th:text="${system}">{running.env}</span></h3>
+    <form action="unrar" method="post" enctype="multipart/form-data">
+        <div>
+            <label for="password">Password: </label>
+            <input type="text"  name="password" id="password" placeholder="Password">
+        </div>
+        <div>
+            <label for="archive">Archive to unrar: </label>
+            <input type="file" name="archive" id="archive">
+        </div>
+        <input type="submit" value="Send">
+    </form>
+</body>
+</html>
