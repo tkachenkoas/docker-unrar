@@ -8,6 +8,6 @@ import java.util.List;
 @Service
 public interface UnrarService {
 
-    List<AttachmentDTO> unrarPasswordProtectedArchive (AttachmentDTO archive, String password);
+    List<AttachmentDTO> unrarPasswordProtectedArchive (byte[] content, String password);
 
 }

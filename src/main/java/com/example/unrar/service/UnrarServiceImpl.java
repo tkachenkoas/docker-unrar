@@ -6,12 +6,12 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
-import java.nio.charset.Charset;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class UnrarServiceImpl implements UnrarService {
@@ -19,14 +19,14 @@ public class UnrarServiceImpl implements UnrarService {
     private static final String ROOT_DIR = System.getProperty("user.home") + "/temp/";
     private static final String TEMP_NAME = "temp_archive.rar";
 
-    @Value( "${unrar.command}" )
+    @Value("${unrar.command}")
     private String unrarCommand;
 
     @Override
-    public List<AttachmentDTO> unrarPasswordProtectedArchive(AttachmentDTO archive, String password) {
+    public List<AttachmentDTO> unrarPasswordProtectedArchive(byte[] content, String password) {
         String tempDir = RandomStringUtils.randomAlphabetic(6).toLowerCase();
         try {
-            File folder = writeTempFileAndGetFolder(archive, tempDir);
+            File folder = writeTempFileAndGetFolder(content, tempDir);
             unrar(folder, password);
             List<AttachmentDTO> result = readExtractedFiles(folder);
             cleanTempFiles(folder);
@@ -66,20 +66,15 @@ public class UnrarServiceImpl implements UnrarService {
         pb.start().waitFor();
     }
 
-    private File writeTempFileAndGetFolder(AttachmentDTO archive, String tempDir) throws IOException {
+    private File writeTempFileAndGetFolder(byte[] content, String tempDir) throws IOException {
         String fileName = ROOT_DIR + tempDir + "/" + TEMP_NAME;
         System.out.println("Target filename: " + fileName);
         File file = new File(fileName);
         file.getParentFile().mkdirs();
-        try (FileOutputStream fw = new FileOutputStream(file)){
-            fw.write(archive.getContent());
+        try (FileOutputStream fw = new FileOutputStream(file)) {
+            fw.write(content);
         }
         return new File(file.getParent());
     }
 
-    private String randomString() {
-        byte[] array = new byte[7];
-        new Random().nextBytes(array);
-        return new String(array, Charset.forName("UTF-8"));
-    }
 }

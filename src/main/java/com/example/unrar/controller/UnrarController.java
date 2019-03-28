@@ -39,9 +39,7 @@ public class UnrarController {
     @ResponseBody
     public HttpEntity<byte[]> unrar(@RequestParam(value = "archive", required = true) MultipartFile archive,
                                     @RequestParam(value = "password") String password) throws Exception {
-        AttachmentDTO archiveToUnrar = new AttachmentDTO(archive.getOriginalFilename(), archive.getBytes());
-
-        List<AttachmentDTO> resultList = unrarService.unrarPasswordProtectedArchive(archiveToUnrar, password);
+        List<AttachmentDTO> resultList = unrarService.unrarPasswordProtectedArchive(archive.getBytes(), password);
         AttachmentDTO result = resultList.get(0);
 
         HttpHeaders header = new HttpHeaders();
